@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('main');
-});
+Route::get('/', 'MainController@root');
 
 Route::get('/find_party', 'MainController@find_party');
 Route::get('/create_party', 'MainController@create_party');
@@ -23,4 +21,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes(['register' => false]);
 
-
+Route::get('/vk_login', 'MainController@vk_login_return');
+Route::get('/login', 'MainController@login');
