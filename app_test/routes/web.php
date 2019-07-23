@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('main');
-});
+Route::get('/', 'MainController@root');
 
 Route::get('/find_party', 'MainController@find_party');
 Route::get('/create_party', 'MainController@create_party');
