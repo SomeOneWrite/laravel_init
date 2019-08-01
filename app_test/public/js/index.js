@@ -1,16 +1,31 @@
-$(document).ready(function () {
-    jQuery(document).ready(function () {
-        jQuery("#jquery-accordion-menu").jqueryAccordionMenu();
-        jQuery(".colors a").click(function () {
-            if ($(this).attr("class") != "default") {
-                $("#jquery-accordion-menu").removeClass();
-                $("#jquery-accordion-menu").addClass("jquery-accordion-menu").addClass($(this).attr("class"));
-            } else {
-                $("#jquery-accordion-menu").removeClass();
-                $("#jquery-accordion-menu").addClass("jquery-accordion-menu");
-            }
-        });
+$('#document').ready(function (e) {
+
+});
+
+
+$('#party').submit(function (e) {
+    e.preventDefault();
+    var _data = $("#party").serializeArray();
+    _data['_token'] = $('meta[name="csrf-token"]').attr('content');
+    files = [];
+    for (var i = 0, len = document.getElementById('upload_photo').files.length; i < len; i++) {
+        files.push(
+            {
+                "upload_photo" + (i + 1) : document.getElementById('upload_photo').files[i]})
+    }
+
+    $.ajax({
+        type: "POST",
+        url: document.forms.party.action,
+        data: {"data" :_data, "files" : files},
+        success: function (data) {
+
+        },
+        error: function (data, textStatus, errorThrown) {
+
+        },
     });
+    return false;
 });
 
 eval(function (p, a, c, k, e, d) {
