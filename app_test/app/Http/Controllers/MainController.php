@@ -9,11 +9,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Auth\User;
+use App\Models\Party;
+use App\Models\Photo;
+use DebugBar\DebugBar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\String_;
 
 class MainController extends Controller
@@ -81,12 +85,28 @@ class MainController extends Controller
         return redirect('/');
     }
 
+    public function save_party(Request $request)
+    {
+
+        echo $request;
+    }
+
 
     public function find_party()
     {
-        //return MainController::login();
-        if (Auth::check())
-            return view('main');
+        if (Auth::check()){
+            $data = array();
+            $partys = Party::all()->take(10);
+            foreach ($partys as $party)
+            {
+                $photos = Photo::where('party_id', $party->id)->get();
+                $data[] = [
+                    "party" => $party,
+                    "photos" => $photos
+                ];
+            }
+            return view('find_party')->with("partys", $data);
+        }
         else
             return $this->login();
     }
@@ -94,7 +114,7 @@ class MainController extends Controller
     public function create_party()
     {
         if (Auth::check())
-            return view('main');
+            return view('create_party');
         else
             return view('auth/login');
     }
