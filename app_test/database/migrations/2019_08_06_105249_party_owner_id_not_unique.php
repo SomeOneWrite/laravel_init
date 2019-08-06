@@ -13,9 +13,7 @@ class PartyOwnerIdNotUnique extends Migration
      */
     public function up()
     {
-        Schema::table('party', function (Blueprint $table) {
-            $table->string('owner_id')->change();
-        });
+        DB::statement('ALTER TABLE party drop index `party_owner_id_unique`');//;
     }
 
     /**

@@ -20,7 +20,7 @@ class Photos extends Migration
             $table->timestamps();
             $table->foreign('party_id')->references('id')->on('party');
         });
-        DB::statement('ALTER TABLE photo ADD `data` mediumblob NOT NULL AFTER party_id');
+        DB::statement('ALTER TABLE photo ADD `data` mediumblob NOT NULL AFTER party_id');//ALTER TABLE `party` ADD UNIQUE( `owner_id`);
     }
 
     /**
