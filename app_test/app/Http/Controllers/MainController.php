@@ -11,23 +11,35 @@ namespace App\Http\Controllers;
 use App\Models\Auth\User;
 use App\Models\Party;
 use App\Models\Photo;
-use DebugBar\DebugBar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
-use phpDocumentor\Reflection\Types\String_;
 
 class MainController extends Controller
 {
     public function root()
     {
-        return view('main');
+        return view('main', ["party_count" => Party::get()->count()]);
     }
 
+    public function file_upload(Request $request)
+    {
+        $allowedfileExtension = ['jpg', 'png'];
+        $files = $request->file('files');
+        if (!is_null($files)) {
+            foreach ($files as $file) {
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $check = in_array($extension, $allowedfileExtension);
+            }
+            if (!$check) {
+                return ["error" => "File type isn't correct"];
+            }
+        }
+        return ['success' => true];
+    }
 
     public function login($server_redirect_uri)
     {
@@ -37,13 +49,12 @@ class MainController extends Controller
         $redirect_uri = "http://laravel.local/vk_login";
         $group_id = env("VK_GROUP_ID");
         $scopes = "offline,groups,email";
-        return redirect("https://oauth.vk.com/authorize?client_id={$app_id}&display=page&redirect_uri={$redirect_uri}&scope={$scopes}&response_type=code&state={$server_redirect_uri}v=5.101");
+        return redirect("https://oauth.vk.com/authorize?client_id={$app_id}&display=page&redirect_uri={$redirect_uri}&scope={$scopes}&response_type=code&state={$server_redirect_uri}&v=5.101");
     }
 
 
     public function getUserCredentials($access_token)
     {
-        ['access_token' => $access_token];
         $client = new Client();
         $fields = "sex,bdate,city,has_photo,status,last_seen";
         $response = $client->get("https://api.vk.com/method/users.get?fields={$fields}&access_token={$access_token}&v=5.101");
@@ -61,7 +72,7 @@ class MainController extends Controller
     {
         $data = array();
         if (!is_null($id)) {
-            $partys = Party::all()->take(10)->where('owner_id','=', $id);
+            $partys = Party::all()->take(10)->where('owner_id', '=', $id);
         } else {
             $partys = Party::all()->take(10);
         }
@@ -79,29 +90,27 @@ class MainController extends Controller
     public function vk_login_return(Request $request)
     {
         $code = $request["code"];
-        $server_redirect_uri = $request["server_redirect_uri"];
+        $server_redirect_uri = $request["state"];
         $app_id = env('VK_APP_ID');
         $secret_key = env('VK_APP_SECRET_KEY');
         $redirect_uri = "http://laravel.local/vk_login";
 
         $client = new Client();
-        $response = $client->get("https://oauth.vk.com/access_token?client_id={$app_id}&client_secret={$secret_key}&redirect_uri=$redirect_uri&code={$code}");
+        $response = $client->get("https://oauth.vk.com/access_token?client_id={$app_id}&client_secret={$secret_key}&redirect_uri={$redirect_uri}&code={$code}");
         $access_token = json_decode($response->getBody(), true)['access_token'];
 
         $credentials = $this->getUserCredentials($access_token);
         $user = User::where('vk_id', $credentials["data"]["id"])->first();
         if ($user) {
-            Auth::loginUsingId($user->id);
-            return redirect('/');
+            Auth::login($user);
+            return redirect('/' . $server_redirect_uri);
         } else {
             $user = new User();
             $user->vk_id = $credentials["data"]["id"];
             $user->name = $credentials["data"]["first_name"];
             $user->access_token = $access_token;
             $user->save();
-            if (Auth::loginUsingId($user->id)) {
-                return redirect('/' . $server_redirect_uri);
-            }
+            Auth::login($user);
         }
         return view('find_party')->with("partys", $this->getPartyData());
     }
@@ -142,7 +151,8 @@ class MainController extends Controller
         Db::beginTransaction();
         try {
             $party = new Party();
-            $party->owner_id = Auth::user()->vk_id;
+            $user = $request->user();
+            $party->owner_id = $user->vk_id;
             $party->title = $request["title"];
             $party->description = $request["description"];
             $party->people_needed = 3;
@@ -170,7 +180,6 @@ class MainController extends Controller
         Auth::logout();
         return redirect('/');
     }
-
 
 
     public

@@ -20,11 +20,12 @@
         <div class="jquery-accordion-menu-header">Название какое?</div>
         <ul>
             @auth
-                <li><a href="/my_party"><i class="fa fa-glass"></i>Мое мероприятие</a><span
-                            class="jquery-accordion-menu-label">12</span></li>
+                <li><a href="/my_party"><i class="fa fa-glass"></i>Мое мероприятие</a>
             @endauth
-            <li><a href="/find_party"><i class="fa fa-glass"></i>Найти мероприятие</a><span
-                        class="jquery-accordion-menu-label">12</span></li>
+            <li><a href="/find_party"><i class="fa fa-glass"></i>Найти мероприятие</a>@if ($party_count === 0)
+                @else
+                    <span class="jquery-accordion-menu-label">{{$party_count}}</span>
+                    @endif</li>
             <li><a href="/create_party"><i class="fa fa-file-image-o"></i>Создать мероприятие</a></li>
             <li><a href="#"><i class="fa fa-cog"></i>Как пользоваться?</a>
             <li><a href="#"><i class="fa fa-envelope"></i>Контакты</a></li>

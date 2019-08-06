@@ -13,19 +13,19 @@
 
 Route::get('/', 'MainController@root');
 
-Route::get('/find_party', 'MainController@find_party');
-Route::get('/create_party', 'MainController@create_party');
-Route::get('/my_party', 'MainController@my_party');
-Route::get('/delete_party', 'MainController@delete_party');
-Route::post('/save_party', 'MainController@save_party');
+Route::get('/find_party', 'MainController@find_party')->middleware('vklogin');
+Route::get('/create_party', 'MainController@create_party')->middleware('vklogin');
+Route::get('/my_party', 'MainController@my_party')->middleware('vklogin');
+Route::get('/delete_party', 'MainController@delete_party')->middleware('vklogin');
+Route::post('/save_party', 'MainController@save_party')->middleware('vklogin');
 
 
-Route::get('/logout', 'MainController@logout');
+Route::get('/logout', 'MainController@logout')->name('logout')->middleware('vklogin');
 
-//Auth::routes();
+Route::post('/create_party/file_upload', 'MainController@file_upload')->middleware('vklogin');
+
 
 Route::get('/home', 'HomeController@index')->name('home');
-Auth::routes(['register' => false]);
 
 Route::get('/vk_login', 'MainController@vk_login_return');
 Route::get('/login', 'MainController@login');

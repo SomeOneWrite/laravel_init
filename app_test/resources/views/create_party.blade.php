@@ -18,7 +18,7 @@
 
         <div class="form-group">
             <small class="form-text text-muted">Добавьте фото к описанию</small>
-            <input name="file" type="file" class="form-control-file" multiple id="upload_photo">
+            <input name="file" type="file" class="form-control-file" multiple id="upload_photo" accept=".jpg, .jpeg, .png" onchange="onChangeInputFile(this);">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Создать</button>

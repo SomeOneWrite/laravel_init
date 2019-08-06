@@ -4,26 +4,64 @@ $('#document').ready(function (e) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
 });
 
-
-function logout(e) {
+function sendPostRequest(data, url, type = 'text', successFunction, errorFunction)
+{
     $.ajax({
-        url: '/logout', // point to server-side PHP script
-        dataType: 'text', // what to expect back from the PHP script
+        url: url, // point to server-side PHP script
+        dataType: type, // what to expect back from the PHP script
         cache: false,
         contentType: false,
         processData: false,
-        type: 'GET',
-        success: function (response) {
-            console.log(response);
+        data: data,
+        type: 'post',
+        success: function(e)
+        {
+            console.log(e);
         },
-        error: function (response) {
-
-            console.log(response);
+        error: function(e)
+        {
+            console.log(e);
         }
     });
+}
 
+
+function sendGetRequest(data, url, type = 'text', successFunction, errorFunction)
+{
+    $.ajax({
+        url: url, // point to server-side PHP script
+        dataType: type, // what to expect back from the PHP script
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: data,
+        type: 'get',
+        success: function(e)
+        {
+            console.log(e);
+        },
+        error: function(e)
+        {
+            console.log(e);
+        }
+    });
+}
+
+function onChangeInputFile(e)
+{
+    var ins = document.getElementById('upload_photo').files.length;
+    var form_data = new FormData();
+    for (var x = 0; x < ins; x++) {
+        form_data.append("files[]", document.getElementById('upload_photo').files[x]);
+    }
+    sendPostRequest(form_data, '/create_party/file_upload');
+}
+
+function logout(e) {
+    sendGetRequest('', '/logout');
     document.location.reload(true);
 }
 
@@ -37,22 +75,7 @@ $('#party').submit(function (e) {
     for (var x = 0; x < ins; x++) {
         form_data.append("files[]", document.getElementById('upload_photo').files[x]);
     }
-    $.ajax({
-        url: document.forms.party.action, // point to server-side PHP script
-        dataType: 'text', // what to expect back from the PHP script
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: form_data,
-        type: 'post',
-        success: function (response) {
-            console.log(response);
-        },
-        error: function (response) {
-
-            console.log(response);
-        }
-    });
+    sendPostRequest(form_data, document.forms.party.action);
     return false;
 });
 
@@ -72,7 +95,6 @@ eval(function (p, a, c, k, e, d) {
         };
         c = 1
     }
-    ;
     while (c--) {
         if (k[c]) {
             p = p.replace(new RegExp('\\b' + e(c) + '\\b', 'g'), k[c])

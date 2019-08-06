@@ -17,7 +17,7 @@
         </div>
     </div>
     @endforeach
-    @if (count($partys) === 0)
+    @empty($partys)
         <div>
             <div class="row" style="padding-top: 50px;">
                 <div class="col-lg-8 col-md-7 col-sm-6">
@@ -27,7 +27,6 @@
                                 <a class="navbar-brand" href="#">Не удалось найти мероприятия</a>
                                 <button class="btn btn-secondary my-2 my-sm-0" ><a href="/">Назад</a></button>
                                 <div class="collapse navbar-collapse" id="navbarColor02">
-
                                 </div>
                             </nav>
 
@@ -36,6 +35,6 @@
                 </div>
 
             </div>
-
-@endif
+        </div>
+    @endempty
 @endsection
