@@ -16,7 +16,7 @@ class CreateParty extends Migration
         Schema::create('party', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('owner_id')->unique();
+            $table->string('owner_id');
             $table->string('description');
             $table->string('people_needed');
             $table->timestamps();

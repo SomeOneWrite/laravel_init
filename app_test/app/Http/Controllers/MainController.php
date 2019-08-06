@@ -159,7 +159,7 @@ class MainController extends Controller
             Db::commit();
         } catch (\Exception $e) {
             Db::rollBack();
-            return "false";
+            return dd($e);
         }
 
         return "true";
