@@ -7,8 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}@yield('title')</title>
     <title>Тестовый сайт для тыры пыры</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ URL::asset('css/bootstrap.css')}} ">
     <link href='//fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic'
           rel='stylesheet' type='text/css'>
@@ -20,7 +19,7 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
 </head>
 <body>
-<div class="content">
+<div class="container">
     @yield('content')
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"  crossorigin="anonymous"></script>

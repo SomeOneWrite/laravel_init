@@ -15,9 +15,14 @@ Route::get('/', 'MainController@root');
 
 Route::get('/find_party', 'MainController@find_party');
 Route::get('/create_party', 'MainController@create_party');
+Route::get('/my_party', 'MainController@my_party');
+Route::get('/delete_party', 'MainController@delete_party');
 Route::post('/save_party', 'MainController@save_party');
 
-Auth::routes();
+
+Route::get('/logout', 'MainController@logout');
+
+//Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes(['register' => false]);

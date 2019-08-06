@@ -17,4 +17,25 @@
         </div>
     </div>
     @endforeach
+    @if (count($partys) === 0)
+        <div>
+            <div class="row" style="padding-top: 50px;">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <div class="d-flex justify-content-center" style="margin-right: 2px;">
+                        <div class="align-self-center">
+                            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                                <a class="navbar-brand" href="#">Не удалось найти мероприятия</a>
+                                <button class="btn btn-secondary my-2 my-sm-0" ><a href="/">Назад</a></button>
+                                <div class="collapse navbar-collapse" id="navbarColor02">
+
+                                </div>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+@endif
 @endsection

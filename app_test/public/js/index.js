@@ -7,6 +7,27 @@ $('#document').ready(function (e) {
 });
 
 
+function logout(e) {
+    $.ajax({
+        url: '/logout', // point to server-side PHP script
+        dataType: 'text', // what to expect back from the PHP script
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'GET',
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (response) {
+
+            console.log(response);
+        }
+    });
+
+    document.location.reload(true);
+}
+
+
 $('#party').submit(function (e) {
     e.preventDefault();
 

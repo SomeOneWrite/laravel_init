@@ -57,10 +57,14 @@ class MainController extends Controller
     }
 
 
-    public function getPartyData()
+    public function getPartyData($id = null)
     {
         $data = array();
-        $partys = Party::all()->take(10);
+        if (!is_null($id)) {
+            $partys = Party::all()->take(10)->where('owner_id','=', $id);
+        } else {
+            $partys = Party::all()->take(10);
+        }
         foreach ($partys as $party) {
             $photos = Photo::where('party_id', $party->id)->get();
             $data[] = [
@@ -99,7 +103,25 @@ class MainController extends Controller
                 return redirect('/' . $server_redirect_uri);
             }
         }
-        return view('find_party')->with("partys", $data);
+        return view('find_party')->with("partys", $this->getPartyData());
+    }
+
+    public function my_party(Request $request)
+    {
+        if (Auth::check()) {
+            return view('show_party')->with("partys", $this->getPartyData(Auth::user()->vk_id));
+        }
+
+        return redirect('/');
+    }
+
+    public function delete_party()
+    {
+        if (Auth::check()) {
+            Party::where('owner_id', '=', Auth::user()->vk_id)->delete();
+        }
+
+        return redirect('/');
     }
 
     public function save_party(Request $request)
@@ -142,6 +164,13 @@ class MainController extends Controller
 
         return "true";
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
+
 
 
     public
