@@ -1,29 +1,36 @@
 $('#document').ready(function (e) {
-
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 });
 
 
 $('#party').submit(function (e) {
     e.preventDefault();
-    var _data = $("#party").serializeArray();
-    _data['_token'] = $('meta[name="csrf-token"]').attr('content');
-    files = [];
-    for (var i = 0, len = document.getElementById('upload_photo').files.length; i < len; i++) {
-        files.push(
-            {
-                "upload_photo" + (i + 1) : document.getElementById('upload_photo').files[i]})
+
+    var form = document.getElementById('party');
+    var form_data = new FormData(form);
+    var ins = document.getElementById('upload_photo').files.length;
+    for (var x = 0; x < ins; x++) {
+        form_data.append("files[]", document.getElementById('upload_photo').files[x]);
     }
-
     $.ajax({
-        type: "POST",
-        url: document.forms.party.action,
-        data: {"data" :_data, "files" : files},
-        success: function (data) {
-
+        url: document.forms.party.action, // point to server-side PHP script
+        dataType: 'text', // what to expect back from the PHP script
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+        type: 'post',
+        success: function (response) {
+            console.log(response);
         },
-        error: function (data, textStatus, errorThrown) {
+        error: function (response) {
 
-        },
+            console.log(response);
+        }
     });
     return false;
 });

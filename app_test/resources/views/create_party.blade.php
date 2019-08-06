@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('title', ' - Создать мероприятие')
 @section('content')
-    <form method="GET" action="/save_party" name="party" id="party">
+    <form method="GET" action="/save_party" name="party" id="party" enctype="multipart/form-data">
+        @csrf
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <div class="form-group">
             <small class="form-text text-muted">Название мероприятия</small>
