@@ -46,7 +46,7 @@ class MainController extends Controller
         $app_id = env('VK_APP_ID');
         $secret_key = env('VK_APP_SECRET_KEY');
         $service_key = env('VK_APP_SERVICE_KEY');
-        $redirect_uri = "http://laravel.local/vk_login";
+        $redirect_uri = env("APP_URL") . "/vk_login";
         $group_id = env("VK_GROUP_ID");
         $scopes = "offline,groups,email";
         return redirect("https://oauth.vk.com/authorize?client_id={$app_id}&display=page&redirect_uri={$redirect_uri}&scope={$scopes}&response_type=code&state={$server_redirect_uri}&v=5.101");
@@ -93,12 +93,12 @@ class MainController extends Controller
         $server_redirect_uri = $request["state"];
         $app_id = env('VK_APP_ID');
         $secret_key = env('VK_APP_SECRET_KEY');
-        $redirect_uri = "http://laravel.local/vk_login";
+        $redirect_uri = env("APP_URL");
 
         $client = new Client();
         $response = $client->get("https://oauth.vk.com/access_token?client_id={$app_id}&client_secret={$secret_key}&redirect_uri={$redirect_uri}&code={$code}");
         $access_token = json_decode($response->getBody(), true)['access_token'];
-
+        echo $response->getBody();
         $credentials = $this->getUserCredentials($access_token);
         $user = User::where('vk_id', $credentials["data"]["id"])->first();
         if ($user) {
@@ -147,6 +147,18 @@ class MainController extends Controller
                 return "file type exception";
             }
         }
+        if (Auth::check()){
+            $data = array();
+            $partys = Party::all()->take(10);
+            foreach ($partys as $party)
+            {
+                $photos = Photo::where('party_id', $party->id)->get();
+                $data[] = [
+                    "party" => $party,
+                    "photos" => $photos
+                ];
+            }
+        }
 
         Db::beginTransaction();
         try {
@@ -188,7 +200,10 @@ class MainController extends Controller
         if (Auth::check()) {
             return view('find_party')->with("partys", $this->getPartyData());
         } else
+        {
             return $this->login("find_party");
+        }
+        return "404";
     }
 
     public
