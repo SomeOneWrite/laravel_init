@@ -93,12 +93,11 @@ class MainController extends Controller
         $server_redirect_uri = $request["state"];
         $app_id = env('VK_APP_ID');
         $secret_key = env('VK_APP_SECRET_KEY');
-        $redirect_uri = env("APP_URL");
+        $redirect_uri = env("APP_URL")."/vk_login";
 
         $client = new Client();
         $response = $client->get("https://oauth.vk.com/access_token?client_id={$app_id}&client_secret={$secret_key}&redirect_uri={$redirect_uri}&code={$code}");
         $access_token = json_decode($response->getBody(), true)['access_token'];
-        echo $response->getBody();
         $credentials = $this->getUserCredentials($access_token);
         $user = User::where('vk_id', $credentials["data"]["id"])->first();
         if ($user) {
